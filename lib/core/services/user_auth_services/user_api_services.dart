@@ -82,9 +82,8 @@ class UserAPIService {
     }
   }
 
-  // Updated register method
   static Future<Map<String, dynamic>> register(
-      UserRegistrationRequestModel model) async {
+      UserRegistrationRequestModel model, List<File> licenseFiles) async {
     bool hasInternet = await isConnectedToInternet();
 
     if (!hasInternet) {
@@ -96,40 +95,68 @@ class UserAPIService {
       };
     }
 
-    Map<String, String> requestHeaders = {
-      'Content-Type': 'application/json',
-    };
-
     var url = Uri.http(
       AppConfiguration.apiURL,
       AppConfiguration.registerAPI,
     );
 
-    var response = await client.post(
-      url,
-      headers: requestHeaders,
-      body: jsonEncode(model.toJson()),
-    );
-
     try {
+      var request = http.MultipartRequest('POST', url);
+
+      // Add user details as fields
+      if (model.username != null)
+        request.fields['first_name'] = model.firstName!;
+      if (model.username != null) request.fields['last_name'] = model.lastName!;
+      if (model.username != null) request.fields['username'] = model.username!;
+      if (model.email != null) request.fields['email'] = model.email!;
+      if (model.password != null) request.fields['password'] = model.password!;
+      if (model.phoneNumber != null)
+        request.fields['phone_number'] = model.phoneNumber!;
+      if (model.userType != null) request.fields['user_type'] = model.userType!;
+      if (model.profileDetails != null) {
+        model.profileDetails!.forEach((key, value) {
+          request.fields[key] = value.toString();
+        });
+      }
+
+      // Add files
+      for (var file in licenseFiles) {
+        var stream = http.ByteStream(file.openRead());
+        var length = await file.length();
+        var multipartFile = http.MultipartFile(
+          'license_files', // Key expected by the backend
+          stream,
+          length,
+          filename: file.path.split('/').last,
+        );
+        request.files.add(multipartFile);
+      }
+
+      // Debug: Print request data
+      print("Fields: ${request.fields}");
+      print("Files: ${request.files.map((file) => file.filename)}");
+
+      var response = await request.send();
+
+      print("ORIGINAL Response YES YES: ${response.statusCode}");
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final decodedResponse = jsonDecode(response.body);
+        final responseBody = await http.Response.fromStream(response);
+        print("From the IF response:  $response");
+
+        final decodedResponse = jsonDecode(responseBody.body);
         return {
           'success': true,
           'user': decodedResponse['user'],
         };
       } else {
-        final decodedResponse = jsonDecode(response.body);
-        final errors = decodedResponse['errors'] as List? ?? [];
-
-        Map<String, String> errorMessages = {};
-        for (var error in errors) {
-          String param = error['param'] ?? 'unknown';
-          String msg = error['msg'] ?? 'Unknown error';
-          errorMessages[param] = msg;
-        }
-
-        return {'success': false, 'errors': errorMessages};
+        final responseBody = await http.Response.fromStream(response);
+        print("From the ELSE response:  $response");
+        final decodedResponse = jsonDecode(responseBody.body);
+        return {
+          'success': false,
+          'errors': decodedResponse['message'] ?? 'Unknown error occurred'
+        };
       }
     } catch (e) {
       print("API Error: $e");

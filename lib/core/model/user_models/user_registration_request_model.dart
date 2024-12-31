@@ -7,16 +7,19 @@ class UserRegistrationRequestModel {
   String? userType;
   String? password;
   Map<String, dynamic>? profileDetails;
+  List<String>? documents; // New property for file URLs
 
-  UserRegistrationRequestModel(
-      {this.firstName,
-      this.lastName,
-      this.email,
-      this.phoneNumber,
-      this.username,
-      this.userType,
-      this.profileDetails,
-      this.password});
+  UserRegistrationRequestModel({
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.phoneNumber,
+    this.username,
+    this.userType,
+    this.password,
+    this.profileDetails,
+    this.documents,
+  });
 
   UserRegistrationRequestModel.fromJson(Map<String, dynamic> json) {
     firstName = json['first_name'];
@@ -30,18 +33,20 @@ class UserRegistrationRequestModel {
         json['profile_details'] == null || json['profile_details'] is String
             ? null
             : Map<String, dynamic>.from(json['profile_details']);
+    documents = json['documents']?.cast<String>();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['first_name'] = this.firstName;
-    data['last_name'] = this.lastName;
-    data['email'] = this.email;
-    data['phone_number'] = this.phoneNumber;
-    data['username'] = this.username;
-    data['user_type'] = this.userType;
-    data['password'] = this.password;
-    data['profile_details'] = this.profileDetails;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['first_name'] = firstName;
+    data['last_name'] = lastName;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['username'] = username;
+    data['user_type'] = userType;
+    data['password'] = password;
+    data['profile_details'] = profileDetails;
+    data['documents'] = documents;
     return data;
   }
 }

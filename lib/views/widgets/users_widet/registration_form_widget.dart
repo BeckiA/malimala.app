@@ -1,19 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
-import 'package:snippet_coder_utils/FormHelper.dart';
-import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'package:waloma/constant/app_color.dart';
-import 'package:waloma/core/config/app_configuration.dart';
-import 'package:waloma/core/model/user_models/user_regisration_response_model.dart';
 import 'package:waloma/core/model/user_models/user_registration_request_model.dart';
-import 'package:waloma/core/providers/user_providers.dart';
 import 'package:waloma/core/services/user_auth_services/user_api_services.dart';
 import 'package:waloma/views/screens/file_upload_screen.dart';
 import 'package:waloma/views/screens/otp_verification_page.dart';
@@ -383,8 +376,7 @@ class _UserRegistrationFormState extends State<UserRegistrationForm> {
               // Sign Up Button
               ElevatedButton(
                 onPressed: () async {
-                  if (isLoading)
-                    return; // Prevent multiple submissions while loading
+                  if (isLoading) return;
                   print("I'm pressed");
                   setState(() {
                     _errors = {};
@@ -407,17 +399,22 @@ class _UserRegistrationFormState extends State<UserRegistrationForm> {
                       isLoading = true;
                     });
 
-                    userType == 'broker'
-                        ? Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BrokerFileUpload(),
-                            ),
-                          )
-                        : null;
                     try {
+                      // If userType is 'broker', check for license files
+                      if (userType == 'broker') {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BrokerFileUpload(
+                              userModel: model,
+                            ),
+                          ),
+                        );
+                        return; // Prevent further execution until files are uploaded
+                      }
+
                       // Wrap the API request in a timeout to handle long delays
-                      final response = await UserAPIService.register(model)
+                      final response = await UserAPIService.register(model, [])
                           .timeout(const Duration(seconds: 15), onTimeout: () {
                         throw TimeoutException(
                             'The server took too long to respond.');

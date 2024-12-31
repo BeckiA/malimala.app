@@ -34,7 +34,7 @@ class ListingService {
       for (var image in images) {
         final mimeTypeData = lookupMimeType(image.path)?.split('/');
         final file = await http.MultipartFile.fromPath(
-          'listing_images', // Update this field name if the backend requires 'listing_images[]'
+          'listing_images',
           image.path,
           contentType: mimeTypeData != null
               ? MediaType(mimeTypeData[0], mimeTypeData[1])
