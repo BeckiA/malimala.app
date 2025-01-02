@@ -6,6 +6,7 @@ import 'package:waloma/core/model/Message.dart';
 import 'package:waloma/core/model/listing_models/listing_response_model.dart';
 import 'package:waloma/core/providers/message_providers.dart';
 import 'package:waloma/core/services/message_services/message_services.dart';
+import 'package:waloma/core/services/user_auth_services/user_instance_service.dart';
 import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
 import 'package:waloma/views/screens/message_detail_page.dart';
 import '../modals/show_contact_modal.dart';
@@ -89,7 +90,7 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
       throw Exception("User not logged in");
     }
 
-    final currentUserId = loginDetails!.user!.id;
+    final currentUserId = loginDetails!.user?.id;
 
     // Create a new Message object to initiate the chat
     final message = Message(

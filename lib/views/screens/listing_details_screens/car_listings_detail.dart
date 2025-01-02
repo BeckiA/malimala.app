@@ -41,7 +41,8 @@ class _CarDetailsScreenState extends State<CarDetailsScreen> {
           ListingDetailDataFields.listingKeyFeatures(
               context, listing, 'Key Features'),
           // Section 5 - Reviews
-          ListingDetailsHelerMethods.listingDetailsReview(context)
+          ListingDetailsHelerMethods.listingDetailsReview(
+              context, listing.userId)
         ],
       ),
     );

@@ -57,7 +57,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
           ListingDetailDataFields.listingKeyFeatures(
               context, listing, 'More On ${listing.title}'),
           // Section 5 - Reviews
-          ListingDetailsHelerMethods.listingDetailsReview(context)
+          ListingDetailsHelerMethods.listingDetailsReview(
+              context, listing.userId)
         ],
       ),
     );

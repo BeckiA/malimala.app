@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:waloma/constant/app_color.dart';
 import 'package:waloma/core/model/Review.dart';
+import 'package:waloma/core/model/rating_models/rating_request_model.dart';
 import 'package:waloma/views/widgets/custom_app_bar.dart';
 import 'package:waloma/views/widgets/review_tile.dart';
-// import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class ReviewsPage extends StatefulWidget {
-  final List<Review> reviews;
+  final List<RatingRequestModel> reviews;
   const ReviewsPage({Key? key, required this.reviews});
 
   @override
   _ReviewsPageState createState() => _ReviewsPageState();
 }
 
-class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin {
+class _ReviewsPageState extends State<ReviewsPage>
+    with TickerProviderStateMixin {
   int _selectedTab = 0;
   getAverageRating() {
     double average = 0.0;
@@ -64,20 +66,23 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                     margin: const EdgeInsets.only(right: 20),
                     child: const Text(
                       '4.0',
-                      style: TextStyle(fontSize: 52, fontWeight: FontWeight.w700, fontFamily: 'poppins'),
+                      style: TextStyle(
+                          fontSize: 52,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'poppins'),
                     ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // SmoothStarRating(
-                      //   allowHalfRating: false,
-                      //   size: 28,
-                      //   color: Colors.orange[400],
-                      //   rating: getAverageRating(),
-                      //   borderColor: AppColor.primarySoft,
-                      // ),
+                      SmoothStarRating(
+                        allowHalfRating: false,
+                        size: 28,
+                        color: Colors.orange[400],
+                        rating: getAverageRating(),
+                        borderColor: AppColor.primarySoft,
+                      ),
                       Container(
                         margin: const EdgeInsets.only(top: 8),
                         child: Text(
@@ -112,11 +117,16 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), primary: (_selectedTab == 0) ? AppColor.primary : Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      primary:
+                          (_selectedTab == 0) ? AppColor.primary : Colors.white,
                     ),
                     child: Text(
                       'all reviews',
-                      style: TextStyle(color: (_selectedTab == 0) ? Colors.white : Colors.grey),
+                      style: TextStyle(
+                          color:
+                              (_selectedTab == 0) ? Colors.white : Colors.grey),
                     ),
                   ),
                   ElevatedButton(
@@ -126,21 +136,29 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border, shape: RoundedRectangleBorder(
+                      onPrimary: AppColor.border,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: AppColor.border, width: 1),
-                      ), primary: (_selectedTab == 1) ? AppColor.primary : Colors.white,
+                        side:
+                            const BorderSide(color: AppColor.border, width: 1),
+                      ),
+                      primary:
+                          (_selectedTab == 1) ? AppColor.primary : Colors.white,
                       elevation: 0,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg', width: 14, height: 14),
+                        SvgPicture.asset('assets/icons/Star-active.svg',
+                            width: 14, height: 14),
                         Container(
                           margin: const EdgeInsets.only(left: 4),
                           child: Text(
                             '1 (2)',
-                            style: TextStyle(color: (_selectedTab == 1) ? Colors.white : Colors.grey),
+                            style: TextStyle(
+                                color: (_selectedTab == 1)
+                                    ? Colors.white
+                                    : Colors.grey),
                           ),
                         ),
                       ],
@@ -153,21 +171,29 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border, shape: RoundedRectangleBorder(
+                      onPrimary: AppColor.border,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: AppColor.border, width: 1),
-                      ), primary: (_selectedTab == 2) ? AppColor.primary : Colors.white,
+                        side:
+                            const BorderSide(color: AppColor.border, width: 1),
+                      ),
+                      primary:
+                          (_selectedTab == 2) ? AppColor.primary : Colors.white,
                       elevation: 0,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg', width: 14, height: 14),
+                        SvgPicture.asset('assets/icons/Star-active.svg',
+                            width: 14, height: 14),
                         Container(
                           margin: const EdgeInsets.only(left: 4),
                           child: Text(
                             '2 (2)',
-                            style: TextStyle(color: (_selectedTab == 2) ? Colors.white : Colors.grey),
+                            style: TextStyle(
+                                color: (_selectedTab == 2)
+                                    ? Colors.white
+                                    : Colors.grey),
                           ),
                         ),
                       ],
@@ -180,21 +206,29 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border, shape: RoundedRectangleBorder(
+                      onPrimary: AppColor.border,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: AppColor.border, width: 1),
-                      ), primary: (_selectedTab == 3) ? AppColor.primary : Colors.white,
+                        side:
+                            const BorderSide(color: AppColor.border, width: 1),
+                      ),
+                      primary:
+                          (_selectedTab == 3) ? AppColor.primary : Colors.white,
                       elevation: 0,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg', width: 14, height: 14),
+                        SvgPicture.asset('assets/icons/Star-active.svg',
+                            width: 14, height: 14),
                         Container(
                           margin: const EdgeInsets.only(left: 4),
                           child: Text(
                             '3 (2)',
-                            style: TextStyle(color: (_selectedTab == 3) ? Colors.white : Colors.grey),
+                            style: TextStyle(
+                                color: (_selectedTab == 3)
+                                    ? Colors.white
+                                    : Colors.grey),
                           ),
                         ),
                       ],
@@ -207,21 +241,29 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border, shape: RoundedRectangleBorder(
+                      onPrimary: AppColor.border,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: AppColor.border, width: 1),
-                      ), primary: (_selectedTab == 4) ? AppColor.primary : Colors.white,
+                        side:
+                            const BorderSide(color: AppColor.border, width: 1),
+                      ),
+                      primary:
+                          (_selectedTab == 4) ? AppColor.primary : Colors.white,
                       elevation: 0,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg', width: 14, height: 14),
+                        SvgPicture.asset('assets/icons/Star-active.svg',
+                            width: 14, height: 14),
                         Container(
                           margin: const EdgeInsets.only(left: 4),
                           child: Text(
                             '4 (2)',
-                            style: TextStyle(color: (_selectedTab == 4) ? Colors.white : Colors.grey),
+                            style: TextStyle(
+                                color: (_selectedTab == 4)
+                                    ? Colors.white
+                                    : Colors.grey),
                           ),
                         ),
                       ],
@@ -234,21 +276,29 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border, shape: RoundedRectangleBorder(
+                      onPrimary: AppColor.border,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: AppColor.border, width: 1),
-                      ), primary: (_selectedTab == 5) ? AppColor.primary : Colors.white,
+                        side:
+                            const BorderSide(color: AppColor.border, width: 1),
+                      ),
+                      primary:
+                          (_selectedTab == 5) ? AppColor.primary : Colors.white,
                       elevation: 0,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg', width: 14, height: 14),
+                        SvgPicture.asset('assets/icons/Star-active.svg',
+                            width: 14, height: 14),
                         Container(
                           margin: const EdgeInsets.only(left: 4),
                           child: Text(
                             '5 (2)',
-                            style: TextStyle(color: (_selectedTab == 5) ? Colors.white : Colors.grey),
+                            style: TextStyle(
+                                color: (_selectedTab == 5)
+                                    ? Colors.white
+                                    : Colors.grey),
                           ),
                         ),
                       ],
@@ -264,10 +314,13 @@ class _ReviewsPageState extends State<ReviewsPage> with TickerProviderStateMixin
               children: [
                 ListView.separated(
                   shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) => ReviewTile(review: widget.reviews[index]),
-                  separatorBuilder: (context, index) => const SizedBox(height: 16),
+                  itemBuilder: (context, index) =>
+                      ReviewTile(review: widget.reviews[index]),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 16),
                   itemCount: widget.reviews.length,
                 ),
                 const SizedBox(),

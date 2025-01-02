@@ -54,8 +54,8 @@ dependencies:
   iconsax: ^0.0.8
   file_picker: ^3.0.4
   dotted_border: ^2.1.0
-  # flutter_form_builder: ^3.10.1
   permission_handler: ^10.2.0
+  smooth_star_rating_null_safety: ^1.0.4+2
 
 dev_dependencies:
   flutter_test:

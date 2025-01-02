@@ -41,7 +41,8 @@ class _HomeDetailsScreenState extends State<HomeDetailsScreen> {
           ListingDetailsHelerMethods.listingFurnishingStatusProviderElement(
               context, listing, 'Furnishing Type', true, listing.details),
           // Section 5 - Reviews
-          ListingDetailsHelerMethods.listingDetailsReview(context)
+          ListingDetailsHelerMethods.listingDetailsReview(
+              context, listing.userId)
         ],
       ),
     );

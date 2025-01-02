@@ -64,7 +64,8 @@ class _BidDetailsScreenState extends State<BidDetailsScreen> {
             'Bid Terms and Conditions',
           ),
           // Section 5 - Reviews
-          ListingDetailsHelerMethods.listingDetailsReview(context)
+          ListingDetailsHelerMethods.listingDetailsReview(
+              context, listing.userId)
         ],
       ),
     );

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:waloma/core/model/Review.dart';
+import 'package:waloma/core/model/rating_models/rating_request_model.dart';
 
 import '../../constant/app_color.dart';
 
 class ReviewTile extends StatelessWidget {
-  final Review review;
+  final RatingRequestModel review;
   ReviewTile({required this.review});
 
   @override
@@ -25,7 +26,7 @@ class ReviewTile extends StatelessWidget {
               color: Colors.grey,
               borderRadius: BorderRadius.circular(100),
               image: DecorationImage(
-                image: AssetImage(review.photoUrl),
+                image: AssetImage('assets/images/waloma_logo.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -45,29 +46,34 @@ class ReviewTile extends StatelessWidget {
                       Flexible(
                         flex: 8,
                         child: Text(
-                          review.name,
-                          style: TextStyle(fontWeight: FontWeight.w600, color: AppColor.primary, fontFamily: 'poppins'),
+                          'User Name',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColor.primary,
+                              fontFamily: 'poppins'),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      // Flexible(
-                      //   flex: 4,
-                      //   child: SmoothStarRating(
-                      //     allowHalfRating: false,
-                      //     size: 16,
-                      //     color: Colors.orange[400],
-                      //     rating: review.rating,
-                      //     borderColor: AppColor.primarySoft,
-                      //   ),
-                      // )
+                      Flexible(
+                        flex: 4,
+                        child: SmoothStarRating(
+                          allowHalfRating: false,
+                          size: 16,
+                          color: Colors.orange[400],
+                          rating: double.parse(review.rating.toString()),
+                          borderColor: AppColor.primarySoft,
+                        ),
+                      )
                     ],
                   ),
                 ),
                 // Comments
                 Text(
                   review.review,
-                  style: TextStyle(color: AppColor.secondary.withOpacity(0.7), height: 150 / 100),
+                  style: TextStyle(
+                      color: AppColor.secondary.withOpacity(0.7),
+                      height: 150 / 100),
                 ),
               ],
             ),
