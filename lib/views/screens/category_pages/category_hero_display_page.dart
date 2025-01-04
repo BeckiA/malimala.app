@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:waloma/views/screens/message_page.dart';
+import 'package:waloma/views/screens/chat_pages/message_page.dart';
 import 'package:waloma/views/widgets/custom_icon_button_widget.dart';
 
 class CategoryHeroDisplayPage extends StatelessWidget {

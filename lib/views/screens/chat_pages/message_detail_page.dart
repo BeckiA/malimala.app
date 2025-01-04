@@ -241,7 +241,7 @@ class _MessageDetailPageState extends State<MessageDetailPage> {
   }
 
   Widget _buildProfileAvatar() {
-    final avatar = widget.chatUser.profileDetails?['avatar'];
+    final avatar = widget.chatUser.profileDetails?['profile_image'];
     final initialsColor = ProfileInitals.getBackgroundColorForInitials(
       widget.chatUser.firstName,
       widget.chatUser.lastName,

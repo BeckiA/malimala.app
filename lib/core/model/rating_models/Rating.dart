@@ -1,9 +1,9 @@
 class RatingModel {
-  final String id;
+  final int id;
   final int rating;
   final String review;
-  final String ratedUser;
-  final String ratingUser;
+  final int ratedUser;
+  final int ratingUser;
   final String createdAt;
 
   RatingModel({

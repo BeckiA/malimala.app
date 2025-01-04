@@ -3,16 +3,16 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:waloma/constant/app_color.dart';
+import 'package:waloma/core/model/rating_models/Rating.dart';
 import 'package:waloma/core/model/rating_models/rating_request_model.dart';
 import 'package:waloma/core/services/rating_services/rating_api_service.dart';
-import 'package:waloma/core/services/user_auth_services/user_instance_service.dart';
 import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
 import 'package:waloma/views/widgets/custom_app_bar.dart';
 import 'package:waloma/views/widgets/review_tile.dart';
 
 class CreateReview extends StatefulWidget {
   final listingProviderId;
-  final List<RatingRequestModel> reviews;
+  final List<RatingModel> reviews;
   const CreateReview(
       {Key? key, required this.reviews, required this.listingProviderId})
       : super(key: key);
@@ -25,7 +25,6 @@ class _CreateReviewState extends State<CreateReview>
     with TickerProviderStateMixin {
   int _selectedTab = 0;
   double _newRating = 0.0;
-  final currentUserId = UserService().userId;
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final _reviewController = TextEditingController();
@@ -71,16 +70,12 @@ class _CreateReviewState extends State<CreateReview>
         review: _reviewController.text,
         ratingUser: loginDetails!.user!.id!.toInt(),
       );
-      print(ratingRequest.ratedUser);
-      print(ratingRequest.rating);
-      print(ratingRequest.review);
-      print(ratingRequest.ratingUser);
       try {
         final response =
             await RatingApiServices.createRatingReview(ratingRequest);
         if (response['success'] == true) {
           setState(() {
-            widget.reviews.add(ratingRequest);
+            // widget.reviews.add(ratingRequest);
             _reviewController.clear();
             _newRating = 0.0;
             isLoading = false;

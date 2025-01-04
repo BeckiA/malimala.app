@@ -64,8 +64,19 @@ class _BidDetailsScreenState extends State<BidDetailsScreen> {
             'Bid Terms and Conditions',
           ),
           // Section 5 - Reviews
-          ListingDetailsHelerMethods.listingDetailsReview(
-              context, listing.userId)
+          FutureBuilder<Widget>(
+            future: ListingDetailsHelerMethods.listingDetailsReview(
+                context, listing.userId),
+            builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return snapshot.data ?? SizedBox.shrink();
+              }
+            },
+          )
         ],
       ),
     );

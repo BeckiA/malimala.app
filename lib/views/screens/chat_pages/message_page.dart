@@ -9,7 +9,7 @@ import 'package:waloma/core/services/message_services/message_services.dart';
 import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
 import 'package:waloma/helpers/profile_image_initals.dart';
 import 'package:waloma/main.dart';
-import 'package:waloma/views/screens/message_detail_page.dart';
+import 'package:waloma/views/screens/chat_pages/message_detail_page.dart';
 
 class MessagePage extends StatefulWidget {
   @override

@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:waloma/constant/app_color.dart';
-import 'package:waloma/core/model/Review.dart';
-import 'package:waloma/core/model/rating_models/rating_request_model.dart';
+import 'package:waloma/core/model/rating_models/Rating.dart';
 import 'package:waloma/views/widgets/custom_app_bar.dart';
 import 'package:waloma/views/widgets/review_tile.dart';
 
 class ReviewsPage extends StatefulWidget {
-  final List<RatingRequestModel> reviews;
+  final List<RatingModel> reviews;
   const ReviewsPage({Key? key, required this.reviews});
 
   @override
@@ -64,8 +63,8 @@ class _ReviewsPageState extends State<ReviewsPage>
                 children: [
                   Container(
                     margin: const EdgeInsets.only(right: 20),
-                    child: const Text(
-                      '4.0',
+                    child: Text(
+                      getAverageRating().toStringAsFixed(1),
                       style: TextStyle(
                           fontSize: 52,
                           fontWeight: FontWeight.w700,
@@ -86,7 +85,7 @@ class _ReviewsPageState extends State<ReviewsPage>
                       Container(
                         margin: const EdgeInsets.only(top: 8),
                         child: Text(
-                          'Based on 36 Reviews',
+                          'Based on ${widget.reviews.length} Reviews',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 12,
@@ -109,41 +108,25 @@ class _ReviewsPageState extends State<ReviewsPage>
                 runSpacing: 16,
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
-                children: [
-                  ElevatedButton(
+                children: List.generate(6, (index) {
+                  int count = widget.reviews
+                      .where((review) => review.rating == index.toDouble())
+                      .length;
+                  return ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _selectedTab = 0;
+                        _selectedTab = index;
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      primary:
-                          (_selectedTab == 0) ? AppColor.primary : Colors.white,
-                    ),
-                    child: Text(
-                      'all reviews',
-                      style: TextStyle(
-                          color:
-                              (_selectedTab == 0) ? Colors.white : Colors.grey),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedTab = 1;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side:
                             const BorderSide(color: AppColor.border, width: 1),
                       ),
-                      primary:
-                          (_selectedTab == 1) ? AppColor.primary : Colors.white,
+                      primary: (_selectedTab == index)
+                          ? AppColor.primary
+                          : Colors.white,
                       elevation: 0,
                     ),
                     child: Row(
@@ -154,181 +137,54 @@ class _ReviewsPageState extends State<ReviewsPage>
                         Container(
                           margin: const EdgeInsets.only(left: 4),
                           child: Text(
-                            '1 (2)',
+                            index == 0 ? 'All reviews' : '$index ($count)',
                             style: TextStyle(
-                                color: (_selectedTab == 1)
-                                    ? Colors.white
-                                    : Colors.grey),
+                              color: (_selectedTab == index)
+                                  ? Colors.white
+                                  : Colors.grey,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedTab = 2;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side:
-                            const BorderSide(color: AppColor.border, width: 1),
-                      ),
-                      primary:
-                          (_selectedTab == 2) ? AppColor.primary : Colors.white,
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg',
-                            width: 14, height: 14),
-                        Container(
-                          margin: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            '2 (2)',
-                            style: TextStyle(
-                                color: (_selectedTab == 2)
-                                    ? Colors.white
-                                    : Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedTab = 3;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side:
-                            const BorderSide(color: AppColor.border, width: 1),
-                      ),
-                      primary:
-                          (_selectedTab == 3) ? AppColor.primary : Colors.white,
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg',
-                            width: 14, height: 14),
-                        Container(
-                          margin: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            '3 (2)',
-                            style: TextStyle(
-                                color: (_selectedTab == 3)
-                                    ? Colors.white
-                                    : Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedTab = 4;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side:
-                            const BorderSide(color: AppColor.border, width: 1),
-                      ),
-                      primary:
-                          (_selectedTab == 4) ? AppColor.primary : Colors.white,
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg',
-                            width: 14, height: 14),
-                        Container(
-                          margin: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            '4 (2)',
-                            style: TextStyle(
-                                color: (_selectedTab == 4)
-                                    ? Colors.white
-                                    : Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedTab = 5;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      onPrimary: AppColor.border,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side:
-                            const BorderSide(color: AppColor.border, width: 1),
-                      ),
-                      primary:
-                          (_selectedTab == 5) ? AppColor.primary : Colors.white,
-                      elevation: 0,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset('assets/icons/Star-active.svg',
-                            width: 14, height: 14),
-                        Container(
-                          margin: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            '5 (2)',
-                            style: TextStyle(
-                                color: (_selectedTab == 5)
-                                    ? Colors.white
-                                    : Colors.grey),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
 
             // Section 3 - List Review
             IndexedStack(
               index: _selectedTab,
-              children: [
-                ListView.separated(
-                  shrinkWrap: true,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      ReviewTile(review: widget.reviews[index]),
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 16),
-                  itemCount: widget.reviews.length,
-                ),
-                const SizedBox(),
-                const SizedBox(),
-                const SizedBox(),
-                const SizedBox(),
-                const SizedBox(),
-              ],
+              children: List.generate(6, (index) {
+                if (index == 0) {
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 24),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) =>
+                        ReviewTile(review: widget.reviews[index]),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 16),
+                    itemCount: widget.reviews.length,
+                  );
+                } else {
+                  List<RatingModel> filteredReviews = widget.reviews
+                      .where((review) => review.rating == index.toDouble())
+                      .toList();
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 24),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) =>
+                        ReviewTile(review: filteredReviews[index]),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 16),
+                    itemCount: filteredReviews.length,
+                  );
+                }
+              }),
             )
           ],
         ),

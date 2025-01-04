@@ -5,7 +5,7 @@ import 'package:waloma/core/providers/message_providers.dart';
 import 'package:waloma/core/services/message_services/message_services.dart';
 import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
 import 'package:waloma/views/screens/empty_cart_page.dart';
-import 'package:waloma/views/screens/message_page.dart';
+import 'package:waloma/views/screens/chat_pages/message_page.dart';
 import 'package:waloma/views/screens/search_page.dart';
 import 'package:waloma/views/widgets/custom_icon_button_widget.dart';
 import 'package:waloma/views/widgets/dummy_search_widget_1.dart';

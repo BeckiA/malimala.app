@@ -17,7 +17,7 @@ class RatingApiServices {
         ..body = jsonEncode(ratingData.toJson());
 
       final response = await client.send(request);
-      print("RESPONSE CODE: ${response.statusCode}");
+      // print("RESPONSE CODE: ${response.statusCode}");
       // print("RESPONSE BODY: ${response}");
       if (response.statusCode == 201) {
         final responseBody = await response.stream.bytesToString();
@@ -32,21 +32,28 @@ class RatingApiServices {
   }
 
   static Future<List<RatingModel>> getRatingsByUserId(
-      {required String userId, int limit = 5, int page = 1}) async {
+      {required int userId}) async {
     try {
       var url = Uri.http(
         AppConfiguration.apiURL,
-        '${AppConfiguration.ratingAPI}/$userId',
-        {'limit': limit.toString(), 'page': page.toString()},
+        '${AppConfiguration.ratingAPI}/user/$userId',
       );
 
       final response = await client.get(url);
 
       if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        return (responseBody['data'] as List)
-            .map((rating) => RatingModel.fromJson(rating))
-            .toList();
+        if (response.headers['content-type']?.contains('application/json') ??
+            false) {
+          final responseBody = jsonDecode(response.body);
+          // print("RESPONSE BODY DURING FETCH: $responseBody");
+
+          return (responseBody['data'] as List)
+              .map((rating) => RatingModel.fromJson(rating))
+              .toList();
+        } else {
+          throw Exception(
+              "Unexpected content type: ${response.headers['content-type']}");
+        }
       } else {
         throw Exception(jsonDecode(response.body)['message']);
       }
