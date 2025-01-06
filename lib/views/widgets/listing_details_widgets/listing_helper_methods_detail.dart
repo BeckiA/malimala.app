@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:waloma/constant/app_color.dart';
 import 'package:waloma/core/config/app_configuration.dart';
 import 'package:waloma/core/model/listing_models/listing_response_model.dart';
 import 'package:waloma/core/model/rating_models/Rating.dart';
 import 'package:waloma/core/model/rating_models/rating_request_model.dart';
+import 'package:waloma/core/providers/review_providers.dart';
 import 'package:waloma/core/services/rating_services/rating_api_service.dart';
+import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
 import 'package:waloma/views/screens/image_viewer.dart';
 import 'package:waloma/views/screens/reviews_page.dart';
 import 'package:waloma/views/screens/reviews_pages/create_review_page.dart';
 import 'package:waloma/views/widgets/custom_app_bar.dart';
 import 'package:waloma/views/widgets/rating_tag.dart';
 import 'package:waloma/views/widgets/review_tile.dart';
+import 'package:waloma/views/widgets/shimmer_widgets/review_tile_shimmer.dart';
 import 'package:waloma/views/widgets/title_less_app_bar.dart';
 
 class ListingDetailsHelerMethods {
@@ -667,113 +671,156 @@ class ListingDetailsHelerMethods {
 
   static Future<Widget> listingDetailsReview(
       BuildContext context, int listingProviderId) async {
+    final loginDetails = await SharedService.loginDetails();
+    final currentUsetId = loginDetails!.user!.id;
     try {
-      // Fetch user ratings
-      List<RatingModel> reviews = await RatingApiServices.getRatingsByUserId(
-        userId: listingProviderId,
-      );
-
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExpansionTile(
-              initiallyExpanded: true,
-              childrenPadding:
-                  const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-              tilePadding:
-                  const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-              title: const Text(
-                'Reviews',
-                style: TextStyle(
-                  color: AppColor.secondary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'poppins',
-                ),
+      return Consumer<ReviewProvider>(
+        builder: (context, reviewProvider, child) {
+          // List<RatingModel> reviews = reviewProvider.reviews;
+          if (reviewProvider.isLoading) {
+            // Show skeleton loaders when loading
+            return Wrap(
+              spacing: 5,
+              runSpacing: 5,
+              children: List.generate(3, (index) => ShimmerReviewTile()),
+            );
+          } else if (reviewProvider.reviews.isEmpty) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.reviews,
+                    color: AppColor.primary.withOpacity(0.5),
+                    size: 80,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No reviews available',
+                    style: TextStyle(
+                      color: AppColor.secondary.withOpacity(0.7),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'poppins',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              expandedCrossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return ReviewTile(
-                      review: reviews[index],
-                    );
-                  },
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 16),
-                  itemCount: reviews.length,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ReviewsPage(
-                              reviews: reviews,
-                            ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        onPrimary: AppColor.primary,
-                        elevation: 0,
-                        primary: AppColor.primarySoft,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'See More Reviews',
-                        style: TextStyle(
-                          color: AppColor.secondary,
-                          fontWeight: FontWeight.w600,
-                        ),
+            );
+          } else {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExpansionTile(
+                    initiallyExpanded: true,
+                    childrenPadding:
+                        const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                    tilePadding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                    title: const Text(
+                      'Reviews',
+                      style: TextStyle(
+                        color: AppColor.secondary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'poppins',
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CreateReview(
-                              reviews: reviews,
-                              listingProviderId: listingProviderId,
+                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return ReviewTile(
+                            review: reviewProvider.reviews[index],
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 16),
+                        itemCount: reviewProvider.reviews.length,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ReviewsPage(
+                                    reviews: reviewProvider.reviews,
+                                  ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              onPrimary: AppColor.primary,
+                              elevation: 0,
+                              primary: AppColor.primarySoft,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              minimumSize: currentUsetId == listingProviderId
+                                  ? Size(
+                                      MediaQuery.of(context).size.width * 0.8,
+                                      50)
+                                  : null,
+                            ),
+                            child: const Text(
+                              'See More Reviews',
+                              style: TextStyle(
+                                color: AppColor.secondary,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        onPrimary: AppColor.primary,
-                        elevation: 0,
-                        primary: AppColor.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                          if (currentUsetId != listingProviderId)
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => CreateReview(
+                                      reviews: reviewProvider.reviews,
+                                      listingProviderId: listingProviderId,
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                onPrimary: AppColor.primary,
+                                elevation: 0,
+                                primary: AppColor.primary,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Review the Listing Provider',
+                                style: TextStyle(
+                                  color: AppColor.primarySoft,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                      child: const Text(
-                        'Review the Listing Provider',
-                        style: TextStyle(
-                          color: AppColor.primarySoft,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }
+        },
       );
     } catch (e) {
-      // Return an error widget if fetching ratings fails
       return Center(
         child: Text(
           'Failed to load reviews: $e',

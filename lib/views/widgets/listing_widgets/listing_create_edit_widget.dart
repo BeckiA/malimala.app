@@ -428,7 +428,7 @@ class _ListingCreateEditState extends State<ListingCreateEdit> {
     return [
       _imagePickerField('vehicles', 2, 10,
           onChanged: _handleImageSelection,
-          existingImages: widget.listing!.listingImages),
+          existingImages: widget.listing?.listingImages ?? []),
       _dropdownField('make', 'Make', ['Toyota', 'Ford', 'BMW'],
           initialValue: details?['make']),
       _dropdownField('model', 'Model', ['Corolla', 'Camry', 'Highlander'],

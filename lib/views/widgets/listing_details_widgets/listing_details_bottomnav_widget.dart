@@ -129,8 +129,8 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
                   elevation: 0,
                 ),
                 onPressed: () async {
-                  print(
-                      "NAME OF MY RECEIVER: ${messageProvider.userData.firstName}");
+                  // print(
+                  // "NAME OF MY RECEIVER: ${messageProvider.userData.firstName}");
                   try {
                     final message = await _initializeMessage(context);
 

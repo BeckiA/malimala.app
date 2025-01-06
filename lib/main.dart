@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:waloma/core/providers/listing_providers.dart';
 import 'package:waloma/core/providers/message_providers.dart';
 import 'package:waloma/core/providers/notification_providers.dart';
+import 'package:waloma/core/providers/review_providers.dart';
 import 'package:waloma/core/services/message_services/message_services.dart';
 import 'package:waloma/core/services/notification_services/notification_api_services.dart';
 import 'package:waloma/views/screens/forgot_password_page.dart';
@@ -26,6 +27,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ListingsProvider()),
+        ChangeNotifierProvider(create: (_) => ReviewProvider()),
         ChangeNotifierProvider(create: (_) => notificationProvider),
         ChangeNotifierProvider(create: (_) => messageProvider),
       ],

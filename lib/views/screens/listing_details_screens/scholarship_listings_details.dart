@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:waloma/core/model/listing_models/listing_response_model.dart';
+import 'package:waloma/core/providers/review_providers.dart';
 import 'package:waloma/views/widgets/listind_details_data_provider.dart/listing_data_provider.dart';
 import 'package:waloma/views/widgets/listing_details_widgets/listing_details_bottomnav_widget.dart';
 import 'package:waloma/views/widgets/listing_details_widgets/listing_helper_methods_detail.dart';
@@ -16,6 +18,13 @@ class ScholarshipDetailsScreen extends StatefulWidget {
 
 class _ScholarshipDetailsScreenState extends State<ScholarshipDetailsScreen> {
   PageController listingImageSlider = PageController();
+  void initState() {
+    super.initState();
+    // Trigger fetch from provider when widget initializes
+    Future.microtask(() => Provider.of<ReviewProvider>(context, listen: false)
+        .fetchReviews(widget.listing.userId));
+  }
+
   @override
   Widget build(BuildContext context) {
     Listings listing = widget.listing;

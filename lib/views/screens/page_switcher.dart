@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:waloma/constant/app_color.dart';
 import 'package:waloma/views/screens/home_page.dart';
-import 'package:waloma/views/screens/notification_page.dart';
-
-import 'placeholders/coming_soon_page.dart';
+import 'package:waloma/views/screens/show_specialized_screen/not_signed_in_notification.dart';
 import 'show_specialized_screen/not_signed_in_post_listing.dart';
 import 'show_specialized_screen/not_signed_in_profile.dart';
 
@@ -28,7 +26,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
       body: [
         HomePage(),
         CanPostListing(),
-        NotificationPage(),
+        CanBrowseNotification(),
         IsSignedIn(),
       ][_selectedIndex],
       bottomNavigationBar: Container(
