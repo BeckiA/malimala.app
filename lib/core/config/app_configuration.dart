@@ -1,10 +1,11 @@
 class AppConfiguration {
   static const String appName = "Waloma";
+  static const String apiURL = "172.16.8.237:3030"; //Zemen
   // static const String apiURL = "backend-api.malimala.org";
-  // static const String apiURL = "172.16.8.228:3030"; //Zemen
-  static const String apiURL = "172.21.51.200:3030"; //Wemezekr
+  // static const String apiURL = "mobile.malimala.org";
+  // static const String apiURL = "172.21.51.200:3030"; //Wemezekr
   // static const String apiURL = "10.2.0.2:3030"; //VPN
-  // static const String apiURL = "192.168.0.101:3030"; //Safari
+  // static const String apiURL = "192.168.0.102:3030"; //Safari
   // static const String apiURL = "192.168.193.6:3030"; //Mobile
   // static const String apiURL = "index.malimala.org";
   static const loginAPI = "/api/auth/login";

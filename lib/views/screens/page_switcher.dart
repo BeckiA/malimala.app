@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:waloma/constant/app_color.dart';
+import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
+import 'package:waloma/views/screens/home/broker_homepage_screen.dart';
 import 'package:waloma/views/screens/home_page.dart';
 import 'package:waloma/views/screens/show_specialized_screen/not_signed_in_notification.dart';
 import 'show_specialized_screen/not_signed_in_post_listing.dart';
@@ -13,6 +15,22 @@ class PageSwitcher extends StatefulWidget {
 
 class _PageSwitcherState extends State<PageSwitcher> {
   int _selectedIndex = 0;
+  String? userType = '';
+
+  @override
+  void initState() {
+    super.initState();
+    func();
+  }
+
+  void func() async {
+    final loginDetails = await SharedService.loginDetails();
+    if (loginDetails != null) {
+      setState(() {
+        userType = loginDetails.user!.userType;
+      });
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,7 +42,8 @@ class _PageSwitcherState extends State<PageSwitcher> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: [
-        HomePage(),
+        userType == 'broker' ? BrokerHomePage() : HomePage(),
+        // HomePage(),
         CanPostListing(),
         CanBrowseNotification(),
         IsSignedIn(),

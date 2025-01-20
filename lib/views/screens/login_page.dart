@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:waloma/constant/app_color.dart';
 import 'package:waloma/core/model/user_models/user_login_request_model.dart';
 import 'package:waloma/core/services/user_auth_services/user_api_services.dart';
+import 'package:waloma/views/screens/page_switcher.dart';
 import 'package:waloma/views/screens/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -263,18 +265,16 @@ class _LoginPageState extends State<LoginPage> {
                       });
 
                       if (response["success"]) {
-                        // Login successful, navigate to the home screen
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          '/landing',
-                          (route) => false,
-                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PageSwitcher(),
+                            ));
                       } else {
-                        final errors = response['errors'];
+                        final errorMessage = response['error'] ??
+                            'Login failed. Please try again.';
                         setState(() {
-                          _errors = errors != null
-                              ? errors['error']
-                              : 'Login failed. Please try again.';
+                          _errors = errorMessage;
                         });
                       }
                     } catch (e) {

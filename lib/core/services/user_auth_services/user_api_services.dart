@@ -46,14 +46,15 @@ class UserAPIService {
         headers: requestHeaders,
         body: jsonEncode(model.toJson()),
       );
-      print(response.body);
+      // print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         await SharedService.setLoginDetails(
           loginResponseJson(response.body),
         );
-
+        final responseData = jsonDecode(response.body);
         return {
-          'success': true,
+          'success': responseData["success"],
+          'user': responseData["user"],
         };
       } else {
         // Capture and return error messages
@@ -63,7 +64,7 @@ class UserAPIService {
         if (responseData['success'] == false) {
           return {
             'success': false,
-            'errors': responseData['message'] ?? 'Unknown error',
+            'error': responseData['error'],
           };
         } else {
           return {
