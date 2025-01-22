@@ -3,6 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:waloma/constant/app_color.dart';
 
 class ContactBottomSheet extends StatefulWidget {
+  final String listingContact;
+  const ContactBottomSheet({Key? key, required this.listingContact})
+      : super(key: key);
   @override
   _ContactBottomSheet createState() => _ContactBottomSheet();
 }
@@ -46,8 +49,8 @@ class _ContactBottomSheet extends State<ContactBottomSheet> {
             ),
           ),
           // Phone number and call button
-          const Text(
-            '+251987654321', // Display the phone number
+          Text(
+            widget.listingContact,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -58,7 +61,7 @@ class _ContactBottomSheet extends State<ContactBottomSheet> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () =>
-                _callPhoneNumber('+251987654321'), // Initiates the call
+                _callPhoneNumber(widget.listingContact), // Initiates the call
             style: ElevatedButton.styleFrom(
               primary: AppColor.primary,
               padding: EdgeInsets.symmetric(

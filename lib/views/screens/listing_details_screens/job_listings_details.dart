@@ -5,6 +5,7 @@ import 'package:waloma/core/providers/review_providers.dart';
 import 'package:waloma/views/widgets/listind_details_data_provider.dart/listing_data_provider.dart';
 import 'package:waloma/views/widgets/listing_details_widgets/listing_details_bottomnav_widget.dart';
 import 'package:waloma/views/widgets/listing_details_widgets/listing_helper_methods_detail.dart';
+import 'package:waloma/views/widgets/shimmer_widgets/review_tile_shimmer.dart';
 
 class JobDetailsScreen extends StatefulWidget {
   final Listings listing;
@@ -71,9 +72,21 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 context, listing.userId),
             builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 24),
+                    child: Wrap(
+                      spacing: 5,
+                      runSpacing: 5,
+                      children:
+                          List.generate(2, (index) => ShimmerReviewTile()),
+                    ),
+                  ),
+                );
               } else if (snapshot.hasError) {
-                return Text('Error jhdbnsb: ${snapshot.error}');
+                return snapshot.data ?? SizedBox.shrink();
               } else {
                 return snapshot.data ?? SizedBox.shrink();
               }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:waloma/constant/app_color.dart';
@@ -24,12 +25,35 @@ class ListingBottomNavWidget extends StatefulWidget {
 
 class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
   late MessageProvider _messageProvider;
-  late final int _currentUserId;
+  int? _currentUserId;
 
   @override
   void dispose() {
     super.dispose();
     // Clean up any resources when the widget is disposed
+  }
+
+  void _showToast(BuildContext context, String message, Color backgroundColor) {
+    showToast(
+      message,
+      context: context,
+      animation: StyledToastAnimation.slideFromBottomFade,
+      reverseAnimation: StyledToastAnimation.fade,
+      position: StyledToastPosition.bottom,
+      duration: Duration(seconds: 4),
+      backgroundColor: backgroundColor,
+      textStyle: TextStyle(color: Colors.white),
+    );
+  }
+
+  void func() async {
+    final loginDetails = await SharedService.loginDetails();
+    if (loginDetails != null) {
+      setState(() {
+        _currentUserId = loginDetails.user!.id;
+      });
+    }
+    print("CURRENT USER ID: $_currentUserId");
   }
 
   Future<void> _initializeChat() async {
@@ -64,10 +88,36 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
     Navigator.of(context).pushReplacementNamed('/login');
   }
 
+  Future<Message> _initializeMessage(BuildContext context) async {
+    // Fetch the current user ID
+    final loginDetails = await SharedService.loginDetails();
+
+    if (loginDetails?.success != true || loginDetails?.user == null) {
+      // Handle cases where user is not logged in
+      _showToast(context, 'Please log in to initiate a chat.', Colors.red);
+      // throw Exception("User not logged in");
+    }
+
+    _currentUserId = loginDetails!.user?.id;
+    // print("CURRENT USER ID: $_currentUserId ");
+    // Create a new Message object to initiate the chat
+    final message = Message(
+      chatId: 0,
+      senderId: _currentUserId!,
+      receiverId: widget.listings.userId,
+      content: "",
+      timestamp: DateTime.now(),
+    );
+
+    return message;
+  }
+
   @override
   void initState() {
     super.initState();
     _initializeChat();
+    _initializeMessage(context);
+    func();
   }
 
   @override
@@ -75,32 +125,6 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
     super.didChangeDependencies();
     // Get the provider reference once and store it
     _messageProvider = Provider.of<MessageProvider>(context, listen: false);
-  }
-
-  Future<Message> _initializeMessage(BuildContext context) async {
-    // Fetch the current user ID
-    final loginDetails = await SharedService.loginDetails();
-
-    if (loginDetails?.success != true || loginDetails?.user == null) {
-      // Handle cases where user is not logged in
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please log in to initiate a chat.')),
-      );
-      throw Exception("User not logged in");
-    }
-
-    final currentUserId = loginDetails!.user?.id;
-
-    // Create a new Message object to initiate the chat
-    final message = Message(
-      chatId: 0,
-      senderId: currentUserId!,
-      receiverId: widget.listings.userId,
-      content: "",
-      timestamp: DateTime.now(),
-    );
-
-    return message;
   }
 
   @override
@@ -114,76 +138,132 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
           top: BorderSide(color: AppColor.border, width: 1),
         ),
       ),
-      child: Row(
-        children: [
-          Consumer<MessageProvider>(
-            builder: (context, messageProvider, _) => Container(
-              width: 64,
-              height: 64,
-              margin: const EdgeInsets.only(right: 14),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: AppColor.secondary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 0,
-                ),
-                onPressed: () async {
-                  // print(
-                  // "NAME OF MY RECEIVER: ${messageProvider.userData.firstName}");
-                  try {
-                    final message = await _initializeMessage(context);
+      child:
+          // _currentUserId != null &&
+          _currentUserId != widget.listings.userId
+              ? Row(
+                  children: [
+                    if (_currentUserId != null &&
+                        _currentUserId != widget.listings.userId)
+                      Consumer<MessageProvider>(
+                        builder: (context, messageProvider, _) => Container(
+                          width: 64,
+                          height: 64,
+                          margin: const EdgeInsets.only(right: 14),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: AppColor.secondary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              elevation: 0,
+                            ),
+                            onPressed: () async {
+                              try {
+                                final message =
+                                    await _initializeMessage(context);
 
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => MessageDetailPage(
-                          chatUser: messageProvider.userData,
-                          initialData: message,
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => MessageDetailPage(
+                                      chatUser: messageProvider.userData,
+                                      initialData: message,
+                                    ),
+                                  ),
+                                );
+                              } catch (e) {
+                                print("Error initializing message: $e");
+                              }
+                            },
+                            child: SvgPicture.asset(
+                              'assets/icons/Chat.svg',
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                  } catch (e) {
-                    print("Error initializing message: $e");
-                  }
-                },
-                child: SvgPicture.asset(
-                  'assets/icons/Chat.svg',
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: SizedBox(
-              height: 64,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: AppColor.primary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
-                  elevation: 0,
-                ),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) {
-                      return ContactBottomSheet();
-                    },
-                  );
-                },
-                child: const Text(
-                  'Contact Seller',
-                  style: TextStyle(
-                      fontFamily: 'poppins',
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      fontSize: 16),
-                ),
-              ),
-            ),
-          ),
-        ],
+                    Expanded(
+                      child: SizedBox(
+                          height: 64,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: AppColor.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              elevation: 0,
+                            ),
+                            onPressed: () {
+                              if (widget.listings.listingType == 'bid' ||
+                                  widget.listings.listingType == 'job' ||
+                                  widget.listings.listingType ==
+                                      'scholarship') {
+                                _currentUserId != null
+                                    ? Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => ApplyPage(
+                                            listingType:
+                                                widget.listings.listingType,
+                                          ),
+                                        ),
+                                      )
+                                    : _showToast(
+                                        context,
+                                        'Please log in to apply for this ${widget.listings.listingType}.',
+                                        Colors.redAccent,
+                                      );
+                              } else {
+                                _currentUserId != null
+                                    ? showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
+                                          return ContactBottomSheet(
+                                              listingContact: widget
+                                                  .listings.contactNumber);
+                                        },
+                                      )
+                                    : _showToast(
+                                        context,
+                                        'Please log in to contact the seller.',
+                                        Colors.redAccent,
+                                      );
+                                ;
+                              }
+                            },
+                            child: Text(
+                              widget.listings.listingType == 'bid' ||
+                                      widget.listings.listingType == 'job' ||
+                                      widget.listings.listingType ==
+                                          'scholarship'
+                                  ? 'Apply for ${widget.listings.title}'
+                                  : 'Contact Seller',
+                              style: const TextStyle(
+                                  fontFamily: 'poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  fontSize: 16),
+                            ),
+                          )),
+                    ),
+                  ],
+                )
+              : SizedBox(),
+    );
+  }
+}
+
+class ApplyPage extends StatelessWidget {
+  final String listingType;
+
+  ApplyPage({required this.listingType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Apply for $listingType'),
+      ),
+      body: Center(
+        child: Text('This is the Apply Page for $listingType'),
       ),
     );
   }

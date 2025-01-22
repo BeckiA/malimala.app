@@ -1,6 +1,6 @@
 class AppConfiguration {
   static const String appName = "Waloma";
-  static const String apiURL = "172.16.8.237:3030"; //Zemen
+  static const String apiURL = "172.16.8.236:3030"; //Zemen
   // static const String apiURL = "backend-api.malimala.org";
   // static const String apiURL = "mobile.malimala.org";
   // static const String apiURL = "172.21.51.200:3030"; //Wemezekr

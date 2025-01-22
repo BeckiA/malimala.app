@@ -253,6 +253,15 @@ class ListingDetailsHelerMethods {
 
   static Container listingInfoDetailHeader(
       BuildContext context, Listings listing, bool isScholarship) {
+    final reviewProvider = Provider.of<ReviewProvider>(context, listen: false);
+    List<RatingModel> reviews = reviewProvider.reviews;
+
+    double getAverageRating() {
+      if (reviews.isEmpty) return 0.0;
+      double total = reviews.fold(0, (sum, review) => sum + review.rating);
+      return total / reviews.length;
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -278,7 +287,7 @@ class ListingDetailsHelerMethods {
                 ),
                 RatingTag(
                   margin: const EdgeInsets.only(left: 10),
-                  value: 3,
+                  value: getAverageRating(),
                 ),
               ],
             ),
@@ -291,7 +300,7 @@ class ListingDetailsHelerMethods {
           listing.listingType == 'scholarship'
               ? const SizedBox()
               : Text(
-                  isScholarship ? '' : '${listing.details['position']}',
+                  isScholarship ? '' : '${listing.details['career_level']}',
                   style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -672,13 +681,11 @@ class ListingDetailsHelerMethods {
   static Future<Widget> listingDetailsReview(
       BuildContext context, int listingProviderId) async {
     final loginDetails = await SharedService.loginDetails();
-    final currentUsetId = loginDetails!.user!.id;
+    final currentUserId = loginDetails?.user?.id;
     try {
       return Consumer<ReviewProvider>(
         builder: (context, reviewProvider, child) {
-          // List<RatingModel> reviews = reviewProvider.reviews;
           if (reviewProvider.isLoading) {
-            // Show skeleton loaders when loading
             return Wrap(
               spacing: 5,
               runSpacing: 5,
@@ -768,7 +775,7 @@ class ListingDetailsHelerMethods {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              minimumSize: currentUsetId == listingProviderId
+                              minimumSize: currentUserId == listingProviderId
                                   ? Size(
                                       MediaQuery.of(context).size.width * 0.8,
                                       50)
@@ -782,7 +789,8 @@ class ListingDetailsHelerMethods {
                               ),
                             ),
                           ),
-                          if (currentUsetId != listingProviderId)
+                          if (currentUserId != listingProviderId &&
+                              currentUserId != null)
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).push(

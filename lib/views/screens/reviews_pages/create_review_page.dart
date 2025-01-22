@@ -217,10 +217,6 @@ class _CreateReviewState extends State<CreateReview>
                         ),
                         child: Text(
                           "Submit Review",
-
-                          // widget.listing != null
-                          //     ? "Update Listing"
-                          //     : "Post Listing",
                           style: const TextStyle(
                               color: Colors.white, fontSize: 16),
                         ),
