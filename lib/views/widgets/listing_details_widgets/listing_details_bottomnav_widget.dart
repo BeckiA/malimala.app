@@ -9,6 +9,7 @@ import 'package:waloma/core/providers/message_providers.dart';
 import 'package:waloma/core/services/message_services/message_services.dart';
 import 'package:waloma/core/services/user_auth_services/user_shared_services.dart';
 import 'package:waloma/views/screens/chat_pages/message_detail_page.dart';
+import 'package:waloma/views/screens/listing_application_pages/multi_step_form_page.dart';
 import '../modals/show_contact_modal.dart';
 
 class ListingBottomNavWidget extends StatefulWidget {
@@ -199,10 +200,8 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
                                 _currentUserId != null
                                     ? Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => ApplyPage(
-                                            listingType:
-                                                widget.listings.listingType,
-                                          ),
+                                          builder: (context) =>
+                                              MultiStepFormPage(),
                                         ),
                                       )
                                     : _showToast(
@@ -247,24 +246,6 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
                   ],
                 )
               : SizedBox(),
-    );
-  }
-}
-
-class ApplyPage extends StatelessWidget {
-  final String listingType;
-
-  ApplyPage({required this.listingType});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Apply for $listingType'),
-      ),
-      body: Center(
-        child: Text('This is the Apply Page for $listingType'),
-      ),
     );
   }
 }
