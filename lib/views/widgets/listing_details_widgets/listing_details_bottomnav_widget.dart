@@ -27,7 +27,7 @@ class ListingBottomNavWidget extends StatefulWidget {
 class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
   late MessageProvider _messageProvider;
   int? _currentUserId;
-
+  String? _authToken;
   @override
   void dispose() {
     super.dispose();
@@ -52,6 +52,7 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
     if (loginDetails != null) {
       setState(() {
         _currentUserId = loginDetails.user!.id;
+        _authToken = loginDetails.token;
       });
     }
     print("CURRENT USER ID: $_currentUserId");
@@ -130,6 +131,8 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
 
   @override
   Widget build(BuildContext context) {
+    int _listingId = widget.listings.id;
+
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(16),
@@ -201,7 +204,11 @@ class _ListingBottomNavWidgetState extends State<ListingBottomNavWidget> {
                                     ? Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              MultiStepFormPage(),
+                                              MultiStepFormPage(
+                                                  currentUserId:
+                                                      _currentUserId!,
+                                                  listingId: _listingId,
+                                                  token: _authToken!),
                                         ),
                                       )
                                     : _showToast(

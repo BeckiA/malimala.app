@@ -251,16 +251,7 @@ class _BrokerFileUploadState extends State<BrokerFileUpload>
                             ),
                             child: Row(
                               children: [
-                                if (['png', 'jpg', 'jpeg']
-                                    .contains(file.extension))
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.file(
-                                      _fileObjects[index],
-                                      width: 70,
-                                    ),
-                                  )
-                                else if (file.extension == 'pdf')
+                                if (file.extension == 'pdf')
                                   Image.asset(
                                     'assets/images/placeholders/pdf.png',
                                     width: 70,

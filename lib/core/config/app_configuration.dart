@@ -18,4 +18,5 @@ class AppConfiguration {
   static const createListings = "/api/listings";
   static const chatUsersAPI = "/api/messages";
   static const ratingAPI = "/api/ratings";
+  static const applyAPI = "/api/applications";
 }
